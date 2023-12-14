@@ -8,7 +8,7 @@ from directory import Directory
 
 class InMemoryFileSystem:
     def __init__(self):
-        self.root = Directory('tatti')
+        self.root = Directory('root')
         self.currentDirectory = self.root
 
     
@@ -334,7 +334,7 @@ def main():
         elif method == 'save':
             if not args: continue
             try:
-                print(args[0], type(args[0]))
+                # print(args[0], type(args[0]))
                 with open(args[0], 'wb') as f:
                     pickle.dump(fs.root, f)
             except FileNotFoundError as e:
@@ -345,7 +345,7 @@ def main():
                 with open(args[0], 'rb') as f:
                     fs.root = pickle.load(f)
                     fs.currentDirectory = fs.root
-                    print(fs.root.directory_name, type(fs.root))
+                    # print(fs.root.directory_name, type(fs.root))
             except:
                 print('Path does not exist.')
         else:
