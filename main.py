@@ -1,3 +1,6 @@
+import json
+import pickle
+
 from file import File
 from directory import Directory
 
@@ -5,8 +8,10 @@ from directory import Directory
 
 class InMemoryFileSystem:
     def __init__(self):
-        self.root = Directory('root')
+        self.root = Directory('tatti')
         self.currentDirectory = self.root
+
+    
     
     def mkdir(self, path):
         if len(path.split('/')) > 1:
@@ -252,7 +257,17 @@ class InMemoryFileSystem:
                     del self.currentDirectory.files[fileOrDirectory]
                 elif fileOrDirectory in self.currentDirectory.directories:
                     del self.currentDirectory.directories[fileOrDirectory]
+    
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
 
+    # def save_state(self, file_path):
+    #     with open(file_path, 'w') as f:
+    #         json.dump()
+
+    # def load_state(self, path):
+    #     pass
 
 def main():
     fs = InMemoryFileSystem()
@@ -316,6 +331,23 @@ def main():
         elif method == 'rm':
             if not args: continue
             fs.rm(*args)
+        elif method == 'save':
+            if not args: continue
+            try:
+                print(args[0], type(args[0]))
+                with open(args[0], 'wb') as f:
+                    pickle.dump(fs.root, f)
+            except FileNotFoundError as e:
+                print(e)
+        elif method == 'load':
+            if not args: continue
+            try:
+                with open(args[0], 'rb') as f:
+                    fs.root = pickle.load(f)
+                    fs.currentDirectory = fs.root
+                    print(fs.root.directory_name, type(fs.root))
+            except:
+                print('Path does not exist.')
         else:
             print(f"Command not recognized: {method}")
 
