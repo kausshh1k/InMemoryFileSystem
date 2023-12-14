@@ -5,7 +5,6 @@ from file import File
 from directory import Directory
 
 
-
 class InMemoryFileSystem:
     def __init__(self):
         self.root = Directory('root')
